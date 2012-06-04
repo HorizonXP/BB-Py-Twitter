@@ -67,7 +67,11 @@ Rectangle {
         width: parent.width * 2 / 3
         anchors.bottom: parent.bottom
         anchors.right: parent.right
-        button1Label: "Login"
+        button1Label: (twitter.authorized) ? "Logout" : "Login"
         button2Label: "New Tweet"
+        onButton1Clicked:
+        {
+            twitter.getAuthorization()
+        }
     }
 }

@@ -5,6 +5,7 @@ from PySide.QtGui import *
 from PySide.QtDeclarative import *
 from PySide.QtOpenGL import *
 
+from .Twitter import Twitter
 
 class App(QObject):
     def run(self):
@@ -19,11 +20,16 @@ class App(QObject):
         glWidget.setAutoFillBackground(False)
 
         v = QDeclarativeView()
+        twitter = Twitter()
+        twitter.consumerKey = 'XIeqUJ941sRdsuPfbnvcFg'
+        twitter.consumerSecret = '3WibMeldSeLN1BfSpjmUzHd5FGWjlRgwsQqZwcKitA'
+        rc = v.engine().rootContext()
+        rc.setContextProperty("twitter", twitter)
 
         v.setViewport(glWidget)
         v.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
 
-        v.setSource(QUrl.fromLocalFile('app/python/bbpy_twitter/main.qml'))
+        v.setSource(QUrl.fromLocalFile('bbpy_twitter/main.qml'))
         v.show()
 
         self.root = v.rootObject()
