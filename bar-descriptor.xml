@@ -9,6 +9,7 @@
         <systemChrome>none</systemChrome>
         <transparent>false</transparent>
     </initialWindow>
+    <splashscreen>assets/background.png</splashscreen>
     <icon><image>assets/icon.png</image></icon>
     <asset path="assets/icon.png">icon.png</asset>
     <asset path="main.py" entry="true" type="Qnx/Python">main.py</asset>
