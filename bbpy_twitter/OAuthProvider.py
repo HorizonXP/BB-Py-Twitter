@@ -1,7 +1,7 @@
 # QNX's httplib2 points to a non-existent file.
 # This is a hotfix to point to our own ca-certs.
-import httplib2
-httplib2.CA_CERTS = 'app/python/bbpy_twitter/ca-certificates.crt'
+# import httplib2
+# httplib2.CA_CERTS = 'app/python/bbpy_twitter/ca-certificates.crt'
 import oauth2
 import urllib.parse as urlparse
 
