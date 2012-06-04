@@ -54,7 +54,7 @@ Rectangle {
             Image {
                 anchors.fill: parent
                 fillMode: Image.PreserveAspectFit
-                source: twitter.profileImage
+                source: (twitter.authorized) ? twitter.profileImage : "" 
                 smooth: true
             }
         }
@@ -66,7 +66,7 @@ Rectangle {
             anchors.left: profileImage.right
             anchors.leftMargin: 5
             anchors.top: parent.top
-            text: twitter.screenName
+            text: (twitter.authorized) ? twitter.screenName : "" 
         }
         Text {
             color: 'white'
@@ -77,7 +77,7 @@ Rectangle {
             anchors.left: profileImage.right
             anchors.leftMargin: 5
             anchors.top: screenName.bottom
-            text: twitter.description
+            text: (twitter.authorized) ? twitter.description : ""
         }
     }
 

@@ -29,7 +29,7 @@ class App(QObject):
         v.setViewport(glWidget)
         v.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
 
-        v.setSource(QUrl.fromLocalFile('bbpy_twitter/main.qml'))
+        v.setSource(QUrl.fromLocalFile('app/python/bbpy_twitter/main.qml'))
         v.show()
 
         self.root = v.rootObject()
