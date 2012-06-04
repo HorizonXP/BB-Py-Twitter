@@ -18,7 +18,7 @@ class Twitter(OAuthProvider):
         if self.authorized:
             reqURL = 'https://api.twitter.com/1/account/verify_credentials.json'
             resp, content = self.client.request(reqURL, 
-                    headers={'Authorization': 'OAuth'}, include_body_hash=False)
+                    headers={'Authorization': 'OAuth'})
             if resp['status'] != '200':
                 raise Exception("Invalid response %s." % resp['status'])
             retVal = json.loads(content.decode())
