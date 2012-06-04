@@ -63,8 +63,23 @@ class OAuthProvider(QObject):
             # Replace our oauth token with the new ones 
             self._oauthToken = access_token['oauth_token']
             self._oauthTokenSecret = access_token['oauth_token_secret']
+            # create a new token, and sign with verifier
+            token = oauth2.Token(self._getOAuthToken(), self._getOAuthTokenSecret())
+            # recreate the client with the new token
+            self.client = oauth2.Client(self.consumer, token)
             self._authorized = True
             self.authorizationChanged.emit()
+
+    @Slot()
+    def logout(self):
+        self._oauthToken = None
+        self._oauthVerifier = None
+        self._oauthTokenSecret = None
+        self.consumer = None
+        self.client = None
+        self._authorized = False
+        self.authorizationChanged.emit()
+
 
     @Signal
     def authorizationChanged(self): pass

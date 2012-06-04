@@ -39,13 +39,46 @@ Rectangle {
         }
     }
 
-    Rectangle {
+    Item {
         id: currentTweet
-        color: 'red'
         height: parent.height * 0.2
         width: parent.width * 2 / 3
         anchors.top: parent.top
         anchors.right: parent.right
+        Item {
+            id: profileImage
+            anchors.left: parent.left
+            anchors.margins: 5;
+            width: parent.height
+            height: parent.height
+            Image {
+                anchors.fill: parent
+                fillMode: Image.PreserveAspectFit
+                source: twitter.profileImage
+                smooth: true
+            }
+        }
+        Text {
+            id: screenName
+            color: 'white'
+            font.bold: true
+            font.pixelSize: parent.height * 0.25
+            anchors.left: profileImage.right
+            anchors.leftMargin: 5
+            anchors.top: parent.top
+            text: twitter.screenName
+        }
+        Text {
+            color: 'white'
+            font.bold: true
+            font.pixelSize: parent.height * 0.125
+            wrapMode: Text.WordWrap
+            width: parent.width - profileImage.width - 20
+            anchors.left: profileImage.right
+            anchors.leftMargin: 5
+            anchors.top: screenName.bottom
+            text: twitter.description
+        }
     }
 
     ListView {
@@ -71,7 +104,12 @@ Rectangle {
         button2Label: "New Tweet"
         onButton1Clicked:
         {
-            twitter.getAuthorization()
+            if (twitter.authorized) {
+                twitter.logout()
+            }
+            else {
+                twitter.getAuthorization()
+            }
         }
     }
 }
