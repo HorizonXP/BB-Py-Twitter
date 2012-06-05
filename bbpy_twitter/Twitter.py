@@ -3,6 +3,7 @@ from PySide.QtCore import *
 import urllib.parse as urlparse
 import json
 import http.client
+from PythonTwitter import twitter as twitterApi
 
 class Twitter(OAuthProvider):
     def __init__(self):
@@ -18,7 +19,7 @@ class Twitter(OAuthProvider):
         if self.authorized:
             reqURL = 'https://api.twitter.com/1/account/verify_credentials.json'
             resp, content = self.client.request(reqURL, 
-                    headers={'Authorization': 'OAuth'})
+                    headers={'Authorization': 'OAuth'}, include_body_hash=False)
             if resp['status'] != '200':
                 raise Exception("Invalid response %s." % resp['status'])
             retVal = json.loads(content.decode())
@@ -59,6 +60,12 @@ class Twitter(OAuthProvider):
         self.idChanged.emit()
         self.locationChanged.emit()
         self.profileImageChanged.emit()
+
+    @Slot()
+    def getUserTimeline(self):
+        api = twitterApi.Api()
+        statuses = api.GetPublicTimeline()
+        print([s.user.name for s in statuses])
 
     @Signal
     def screenNameChanged(self): pass

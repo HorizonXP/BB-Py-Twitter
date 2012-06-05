@@ -54,10 +54,8 @@ Rectangle {
             Image {
                 anchors.fill: parent
                 fillMode: Image.PreserveAspectFit
-                source: (twitter.authorized) ? twitter.profileImage : "https://si0.twimg.com/profile_images/1438634086/avatar.png" 
+                source: (twitter.authorized) ? twitter.profileImage : "" 
                 smooth: true
-                asynchronous: true
-                cache: false
             }
         }
         Text {
@@ -68,7 +66,7 @@ Rectangle {
             anchors.left: profileImage.right
             anchors.leftMargin: 5
             anchors.top: parent.top
-            text: (twitter.authorized) ? twitter.screenName : ""
+            text: (twitter.authorized) ? twitter.screenName : "" 
         }
         Text {
             color: 'white'
@@ -111,6 +109,12 @@ Rectangle {
             }
             else {
                 twitter.getAuthorization()
+            }
+        }
+        onButton2Clicked:
+        {
+            if (twitter.authorized) {
+                twitter.getUserTimeline();
             }
         }
     }
