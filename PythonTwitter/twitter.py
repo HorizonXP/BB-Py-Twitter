@@ -3664,7 +3664,7 @@ class Api(object):
     defensive check because during some Twitter network outages
     it will return an HTML failwhale page."""
     try:
-      data = simplejson.loads(json.decode())
+      data = simplejson.loads(json)
       self._CheckForTwitterError(data)
     except ValueError:
       if "<title>Twitter / Over capacity</title>" in json:
@@ -3801,7 +3801,7 @@ class Api(object):
         url_data = self._cache.Get(key)
 
     # Always return the latest version
-    return url_data
+    return str(url_data)
 
 class _FileCacheError(Exception):
   '''Base exception class for FileCache related errors'''

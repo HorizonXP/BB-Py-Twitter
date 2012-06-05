@@ -63,8 +63,13 @@ class Twitter(OAuthProvider):
 
     @Slot()
     def getUserTimeline(self):
-        api = twitterApi.Api()
-        statuses = api.GetPublicTimeline()
+        api = twitterApi.Api(debugHTTP=True)
+        while True:
+            try:
+                statuses = api.GetPublicTimeline()
+                break
+            except:
+                pass
         print([s.user.name for s in statuses])
 
     @Signal
