@@ -111,5 +111,11 @@ Rectangle {
                 twitter.getAuthorization()
             }
         }
+        onButton2Clicked:
+        {
+            if (twitter.authorized) {
+                twitter.getUserTimeline();
+            }
+        }
     }
 }

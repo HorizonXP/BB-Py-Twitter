@@ -1,8 +1,5 @@
 *.bar
 *.swp
 *~
-desktop_bridge.pyc
-main.pyc
-gen_certs.pyc
-SSLForwarder.pyc
-DrawText.pyc
+*.pyc
+*__pycache__*

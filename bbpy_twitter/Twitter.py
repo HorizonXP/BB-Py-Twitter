@@ -3,6 +3,7 @@ from PySide.QtCore import *
 import urllib.parse as urlparse
 import json
 import http.client
+from PythonTwitter import twitter as twitterApi
 
 class Twitter(OAuthProvider):
     def __init__(self):
@@ -59,6 +60,12 @@ class Twitter(OAuthProvider):
         self.idChanged.emit()
         self.locationChanged.emit()
         self.profileImageChanged.emit()
+
+    @Slot()
+    def getUserTimeline(self):
+        api = twitterApi.Api()
+        statuses = api.GetPublicTimeline()
+        print([s.user.name for s in statuses])
 
     @Signal
     def screenNameChanged(self): pass
