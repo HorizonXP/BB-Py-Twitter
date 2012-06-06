@@ -20,10 +20,7 @@ class Twitter(OAuthProvider):
     def getUserProfileData(self):
         if self.authorized:
             self._twitterApi.SetCredentials(consumer_key=self.consumerKey, consumer_secret=self.consumerSecret, access_token_key=self._oauthToken, access_token_secret=self._oauthTokenSecret)
-            try:
-                self.User = self._twitterApi.VerifyCredentials()
-            except ValueError as e:
-                self.User = self._twitterApi.VerifyCredentials() 
+            self.User = self._twitterApi.VerifyCredentials()
         else:
             self.User = None
             self._twitterApi.ClearCredentials()

@@ -20,11 +20,11 @@ class App(QObject):
         glWidget.setAutoFillBackground(False)
 
         v = QDeclarativeView()
-        twitter = Twitter()
-        twitter.consumerKey = 'XIeqUJ941sRdsuPfbnvcFg'
-        twitter.consumerSecret = '3WibMeldSeLN1BfSpjmUzHd5FGWjlRgwsQqZwcKitA'
+        self.twitter = Twitter()
+        self.twitter.consumerKey = 'XIeqUJ941sRdsuPfbnvcFg'
+        self.twitter.consumerSecret = '3WibMeldSeLN1BfSpjmUzHd5FGWjlRgwsQqZwcKitA'
         rc = v.engine().rootContext()
-        rc.setContextProperty("twitter", twitter)
+        rc.setContextProperty("twitter", self.twitter)
 
         v.setViewport(glWidget)
         v.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
