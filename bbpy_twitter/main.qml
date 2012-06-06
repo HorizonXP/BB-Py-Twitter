@@ -170,6 +170,8 @@ Rectangle {
         {
             if (twitter.authorized) {
                 twitter.logout()
+                userTimelineModel.clear()
+                friendsTimelineModel.clear()
             }
             else {
                 twitter.getAuthorization()
