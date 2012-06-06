@@ -210,6 +210,15 @@ class Twitter(OAuthProvider):
             self.userChanged.emit()
             self._twitterApi.ClearCredentials()
 
+    @Slot(str)
+    def postTweet(self, tweet):
+        if self.authorized:
+            self._twitterApi.PostUpdate(tweet)
+            self.tweetPosted.emit()
+
+    @Signal
+    def tweetPosted(self): pass
+
     @Signal
     def publicTimelineUpdated(self): pass
     def _getPublicTimeline(self):

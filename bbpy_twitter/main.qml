@@ -165,7 +165,7 @@ Rectangle {
         anchors.bottom: parent.bottom
         anchors.right: parent.right
         button1Label: (twitter.authorized) ? "Logout" : "Login"
-        button2Label: "New Tweet"
+        button2Label: "Tweet about BB-Py!"
         onButton1Clicked:
         {
             if (twitter.authorized) {
@@ -178,7 +178,7 @@ Rectangle {
         onButton2Clicked:
         {
             if (twitter.authorized) {
-                twitter.getUserTimeline(timelineModel);
+                twitter.postTweet("I'm sending this tweet from a @BBPyProject sample app! This is so cool, check them out!");
             }
         }
     }
