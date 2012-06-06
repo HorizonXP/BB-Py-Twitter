@@ -6,12 +6,12 @@ Rectangle {
     height: 600
     color: "#7e0080"
 
-    function addUserElement(s) {
-        userTimelineModel.append({'tweet': s.text, 'relativeCreatedAt': s.relativeCreatedAt})
+    function addUserElement(s, u) {
+        userTimelineModel.append({'tweet': s.text, 'relativeCreatedAt': s.relativeCreatedAt, 'img': u.profileImage, 'screen_name': u.screenName})
     }
 
-    function addFriendsElement(s) {
-        friendsTimelineModel.append({'tweet': s.text, 'relativeCreatedAt': s.relativeCreatedAt, 'img': s.user.profileImage, 'screen_name': s.user.screenName})
+    function addFriendsElement(s, u) {
+        friendsTimelineModel.append({'tweet': s.text, 'relativeCreatedAt': s.relativeCreatedAt, 'img': u.profileImage, 'screen_name': u.screenName})
     }
 
     Image {
@@ -27,6 +27,41 @@ Rectangle {
         id: friendsTimelineModel
     }
 
+    Component {
+        id: tweetDelegate
+        Item {
+            width: parent.width; height: 50
+            anchors.margins: 5
+            Row {
+                height: parent.height
+                width: parent.width
+                Image {
+                    id: imgTweet
+                    fillMode: Image.PreserveAspectFit
+                    source: img
+                }
+                Column {
+                    width: parent.width - imgTweet.width
+                    Text {
+                        width: parent.width
+                        color: 'white'
+                        font.pixelSize: 12
+                        text: screen_name
+                        anchors.leftMargin: 5
+                    }
+                    Text {
+                        width: parent.width
+                        color: 'white'
+                        font.pixelSize: 10
+                        wrapMode: Text.WordWrap
+                        text: tweet
+                        anchors.leftMargin: 5
+                    }
+                }
+            }
+        }
+    }
+
     ListView {
         id: timeline
         width: parent.width / 3
@@ -34,22 +69,7 @@ Rectangle {
         anchors.left: parent.left
         anchors.top: parent.top
         model: friendsTimelineModel
-        delegate: Item {
-            Image {
-                fillMode: Image.PreserveAspectFit
-                source: img
-            }
-            Text {
-                text: screen_name
-                color: 'white'
-            }
-            Text {
-                color: 'white'
-                font.pixelSize: 12
-                wrapMode: Text.WordWrap
-                text: tweet + ": " + relativeCreatedAt
-            }
-        }
+        delegate: tweetDelegate
     }
 
     Item {
@@ -82,6 +102,7 @@ Rectangle {
             text: (twitter.authorized) ? twitter.CurrentUser.screenName : "" 
         }
         Text {
+            id: userDescription
             color: 'white'
             font.bold: true
             font.pixelSize: parent.height * 0.125
@@ -91,6 +112,39 @@ Rectangle {
             anchors.leftMargin: 5
             anchors.top: screenName.bottom
             text: (twitter.authorized) ? twitter.CurrentUser.description : ""
+        }
+        Text {
+            id: userFollowersCount
+            color: 'white'
+            font.bold: true
+            width: (parent.width - profileImage.width - 20)/3
+            font.pixelSize: parent.height * 0.0625
+            anchors.left: profileImage.right
+            anchors.leftMargin: 5
+            anchors.top: userDescription.bottom
+            text: (twitter.authorized) ? twitter.CurrentUser.followersCount : ""
+        }
+        Text {
+            id: userFriendsCount
+            color: 'white'
+            font.bold: true
+            width: (parent.width - profileImage.width - 20)/3
+            font.pixelSize: parent.height * 0.0625
+            anchors.left: userFollowersCount.right
+            anchors.leftMargin: 5
+            anchors.top: userDescription.bottom
+            text: (twitter.authorized) ? twitter.CurrentUser.friendsCount : ""
+        }
+        Text {
+            id: userStatusesCount
+            color: 'white'
+            font.bold: true
+            width: (parent.width - profileImage.width - 20)/3
+            font.pixelSize: parent.height * 0.0625
+            anchors.left: userFriendsCount.right
+            anchors.leftMargin: 5
+            anchors.top: userDescription.bottom
+            text: (twitter.authorized) ? twitter.CurrentUser.statusesCount : ""
         }
     }
 
@@ -102,10 +156,7 @@ Rectangle {
         anchors.right: parent.right
         clip: true
         model: userTimelineModel
-        delegate: Text {
-            color: 'gray'
-            text: tweet + ": " + relativeCreatedAt
-        }
+        delegate: tweetDelegate
     }
 
     ToolBar {
