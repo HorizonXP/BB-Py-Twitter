@@ -25,6 +25,11 @@ class App(QObject):
         self.twitter.consumerSecret = '3WibMeldSeLN1BfSpjmUzHd5FGWjlRgwsQqZwcKitA'
         rc = v.engine().rootContext()
         rc.setContextProperty("twitter", self.twitter)
+<<<<<<< HEAD
+=======
+        self.twitter.userTimelineUpdated.connect(self.addUserTimeline)
+        self.twitter.friendsTimelineUpdated.connect(self.addFriendsTimeline)
+>>>>>>> 8ee4919... Attempt to return list of statuses
 
         v.setViewport(glWidget)
         v.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
@@ -36,6 +41,14 @@ class App(QObject):
 
         # Enter Qt application main loop
         sys.exit(self.app.exec_())
+
+    def addUserTimeline(self):
+        for s in self.twitter.UserTimeline._items:
+            self.root.addUserElement(s)
+
+    def addFriendsTimeline(self):
+        for s in self.twitter.FriendsTimeline._items:
+            self.root.addFriendsElement(s)
 
 def main():
     try:
