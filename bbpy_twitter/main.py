@@ -20,11 +20,13 @@ class App(QObject):
         glWidget.setAutoFillBackground(False)
 
         v = QDeclarativeView()
-        twitter = Twitter()
-        twitter.consumerKey = 'XIeqUJ941sRdsuPfbnvcFg'
-        twitter.consumerSecret = '3WibMeldSeLN1BfSpjmUzHd5FGWjlRgwsQqZwcKitA'
+        self.twitter = Twitter()
+        self.twitter.consumerKey = 'XIeqUJ941sRdsuPfbnvcFg'
+        self.twitter.consumerSecret = '3WibMeldSeLN1BfSpjmUzHd5FGWjlRgwsQqZwcKitA'
         rc = v.engine().rootContext()
-        rc.setContextProperty("twitter", twitter)
+        rc.setContextProperty("twitter", self.twitter)
+        self.twitter.userTimelineUpdated.connect(self.addUserTimeline)
+        self.twitter.friendsTimelineUpdated.connect(self.addFriendsTimeline)
 
         v.setViewport(glWidget)
         v.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
@@ -36,6 +38,14 @@ class App(QObject):
 
         # Enter Qt application main loop
         sys.exit(self.app.exec_())
+
+    def addUserTimeline(self):
+        for s in self.twitter.UserTimeline._items:
+            self.root.addUserElement(s)
+
+    def addFriendsTimeline(self):
+        for s in self.twitter.FriendsTimeline._items:
+            self.root.addFriendsElement(s)
 
 def main():
     try:

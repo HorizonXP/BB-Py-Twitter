@@ -6,36 +6,49 @@ Rectangle {
     height: 600
     color: "#7e0080"
 
+    function addUserElement(s) {
+        userTimelineModel.append({'tweet': s.text, 'relativeCreatedAt': s.relativeCreatedAt})
+    }
+
+    function addFriendsElement(s) {
+        friendsTimelineModel.append({'tweet': s.text, 'relativeCreatedAt': s.relativeCreatedAt, 'img': s.user.profileImage, 'screenName': s.user.screenName})
+    }
+
     Image {
         source: '../assets/background.png'
         anchors.fill: parent
     }
 
     ListModel {
-        id: timelineModel
-        ListElement {
-            name: "Bill Smith"
-            number: "555 3264"
-        }
-        ListElement {
-            name: "John Brown"
-            number: "555 8426"
-        }
-        ListElement {
-            name: "Sam Wise"
-            number: "555 0473"
-        }
+        id: userTimelineModel
     }
+
+    ListModel {
+        id: friendsTimelineModel
+    }
+
     ListView {
         id: timeline
         width: parent.width / 3
         height: parent.height
         anchors.left: parent.left
         anchors.top: parent.top
-        model: timelineModel
-        delegate: Text {
-            color: 'white'
-            text: name + ": " + number
+        model: friendsTimelineModel
+        delegate: Item {
+            Image {
+                fillMode: Image.PreserveAspectFit
+                source: img
+            }
+            Text {
+                text: screenName
+                color: 'white'
+            }
+            Text {
+                color: 'white'
+                font.pixelSize: 12
+                wrapMode: Text.WordWrap
+                text: tweet + ": " + relativeCreatedAt
+            }
         }
     }
 
@@ -54,7 +67,7 @@ Rectangle {
             Image {
                 anchors.fill: parent
                 fillMode: Image.PreserveAspectFit
-                source: (twitter.authorized) ? twitter.profileImage : "" 
+                source: (twitter.authorized) ? twitter.CurrentUser.profileImage : "" 
                 smooth: true
             }
         }
@@ -66,7 +79,7 @@ Rectangle {
             anchors.left: profileImage.right
             anchors.leftMargin: 5
             anchors.top: parent.top
-            text: (twitter.authorized) ? twitter.screenName : "" 
+            text: (twitter.authorized) ? twitter.CurrentUser.screenName : "" 
         }
         Text {
             color: 'white'
@@ -77,7 +90,7 @@ Rectangle {
             anchors.left: profileImage.right
             anchors.leftMargin: 5
             anchors.top: screenName.bottom
-            text: (twitter.authorized) ? twitter.description : ""
+            text: (twitter.authorized) ? twitter.CurrentUser.description : ""
         }
     }
 
@@ -88,10 +101,10 @@ Rectangle {
         anchors.top: currentTweet.bottom
         anchors.right: parent.right
         clip: true
-        model: timelineModel
+        model: userTimelineModel
         delegate: Text {
             color: 'gray'
-            text: name + ": " + number
+            text: tweet + ": " + relativeCreatedAt
         }
     }
 
@@ -114,7 +127,7 @@ Rectangle {
         onButton2Clicked:
         {
             if (twitter.authorized) {
-                twitter.getUserTimeline();
+                twitter.getUserTimeline(timelineModel);
             }
         }
     }
