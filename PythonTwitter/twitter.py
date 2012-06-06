@@ -3779,6 +3779,9 @@ class Api(object):
       url = self._BuildUrl(url, extra_params=extra_params)
       encoded_post_data = self._EncodePostData(post_data)
 
+    if hasattr(encoded_post_data, 'encode'):
+        encoded_post_data = encoded_post_data.encode()
+
     # Open and return the URL immediately if we're not going to cache
     if encoded_post_data or no_cache or not self._cache or not self._cache_timeout:
       response = opener.open(url, encoded_post_data)
