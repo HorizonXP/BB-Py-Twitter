@@ -44,11 +44,11 @@ class App(QObject):
 
     def addUserTimeline(self):
         for s in self.twitter.UserTimeline._items:
-            self.root.addUserElement(s)
+            self.root.addUserElement(s, s.user)
 
     def addFriendsTimeline(self):
         for s in self.twitter.FriendsTimeline._items:
-            self.root.addFriendsElement(s)
+            self.root.addFriendsElement(s, s.user)
 
 def main():
     try:
