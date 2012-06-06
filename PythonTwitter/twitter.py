@@ -3766,7 +3766,7 @@ class Api(object):
                                                   http_method=http_method,
                                                   http_url=url, parameters=parameters)
 
-      req.sign_request(self._signature_method_hmac_sha1, self._oauth_consumer, self._oauth_token)
+      req.sign_request(self._signature_method_hmac_sha1, self._oauth_consumer, self._oauth_token, include_body_hash=False)
 
       headers = req.to_header()
 
@@ -3778,6 +3778,9 @@ class Api(object):
     else:
       url = self._BuildUrl(url, extra_params=extra_params)
       encoded_post_data = self._EncodePostData(post_data)
+
+    if hasattr(encoded_post_data, 'encode'):
+        encoded_post_data = encoded_post_data.encode()
 
     # Open and return the URL immediately if we're not going to cache
     if encoded_post_data or no_cache or not self._cache or not self._cache_timeout:

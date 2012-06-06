@@ -6,37 +6,70 @@ Rectangle {
     height: 600
     color: "#7e0080"
 
+    function addUserElement(s, u) {
+        userTimelineModel.append({'tweet': s.text, 'relativeCreatedAt': s.relativeCreatedAt, 'img': u.profileImage, 'screen_name': u.screenName})
+    }
+
+    function addFriendsElement(s, u) {
+        friendsTimelineModel.append({'tweet': s.text, 'relativeCreatedAt': s.relativeCreatedAt, 'img': u.profileImage, 'screen_name': u.screenName})
+    }
+
     Image {
         source: '../assets/background.png'
         anchors.fill: parent
     }
 
     ListModel {
-        id: timelineModel
-        ListElement {
-            name: "Bill Smith"
-            number: "555 3264"
-        }
-        ListElement {
-            name: "John Brown"
-            number: "555 8426"
-        }
-        ListElement {
-            name: "Sam Wise"
-            number: "555 0473"
+        id: userTimelineModel
+    }
+
+    ListModel {
+        id: friendsTimelineModel
+    }
+
+    Component {
+        id: tweetDelegate
+        Item {
+            width: parent.width; height: 50
+            anchors.margins: 5
+            Row {
+                height: parent.height
+                width: parent.width
+                Image {
+                    id: imgTweet
+                    fillMode: Image.PreserveAspectFit
+                    source: img
+                }
+                Column {
+                    width: parent.width - imgTweet.width
+                    Text {
+                        width: parent.width
+                        color: 'white'
+                        font.pixelSize: 12
+                        text: screen_name
+                        anchors.leftMargin: 5
+                    }
+                    Text {
+                        width: parent.width
+                        color: 'white'
+                        font.pixelSize: 10
+                        wrapMode: Text.WordWrap
+                        text: tweet
+                        anchors.leftMargin: 5
+                    }
+                }
+            }
         }
     }
+
     ListView {
         id: timeline
         width: parent.width / 3
         height: parent.height
         anchors.left: parent.left
         anchors.top: parent.top
-        model: timelineModel
-        delegate: Text {
-            color: 'white'
-            text: name + ": " + number
-        }
+        model: friendsTimelineModel
+        delegate: tweetDelegate
     }
 
     Item {
@@ -54,7 +87,7 @@ Rectangle {
             Image {
                 anchors.fill: parent
                 fillMode: Image.PreserveAspectFit
-                source: (twitter.authorized) ? twitter.profileImage : "" 
+                source: (twitter.authorized) ? twitter.CurrentUser.profileImage : "" 
                 smooth: true
             }
         }
@@ -66,9 +99,10 @@ Rectangle {
             anchors.left: profileImage.right
             anchors.leftMargin: 5
             anchors.top: parent.top
-            text: (twitter.authorized) ? twitter.screenName : "" 
+            text: (twitter.authorized) ? twitter.CurrentUser.screenName : "" 
         }
         Text {
+            id: userDescription
             color: 'white'
             font.bold: true
             font.pixelSize: parent.height * 0.125
@@ -77,7 +111,40 @@ Rectangle {
             anchors.left: profileImage.right
             anchors.leftMargin: 5
             anchors.top: screenName.bottom
-            text: (twitter.authorized) ? twitter.description : ""
+            text: (twitter.authorized) ? twitter.CurrentUser.description : ""
+        }
+        Text {
+            id: userFollowersCount
+            color: 'white'
+            font.bold: true
+            width: (parent.width - profileImage.width - 20)/3
+            font.pixelSize: parent.height * 0.0625
+            anchors.left: profileImage.right
+            anchors.leftMargin: 5
+            anchors.top: userDescription.bottom
+            text: (twitter.authorized) ? twitter.CurrentUser.followersCount : ""
+        }
+        Text {
+            id: userFriendsCount
+            color: 'white'
+            font.bold: true
+            width: (parent.width - profileImage.width - 20)/3
+            font.pixelSize: parent.height * 0.0625
+            anchors.left: userFollowersCount.right
+            anchors.leftMargin: 5
+            anchors.top: userDescription.bottom
+            text: (twitter.authorized) ? twitter.CurrentUser.friendsCount : ""
+        }
+        Text {
+            id: userStatusesCount
+            color: 'white'
+            font.bold: true
+            width: (parent.width - profileImage.width - 20)/3
+            font.pixelSize: parent.height * 0.0625
+            anchors.left: userFriendsCount.right
+            anchors.leftMargin: 5
+            anchors.top: userDescription.bottom
+            text: (twitter.authorized) ? twitter.CurrentUser.statusesCount : ""
         }
     }
 
@@ -88,11 +155,8 @@ Rectangle {
         anchors.top: currentTweet.bottom
         anchors.right: parent.right
         clip: true
-        model: timelineModel
-        delegate: Text {
-            color: 'gray'
-            text: name + ": " + number
-        }
+        model: userTimelineModel
+        delegate: tweetDelegate
     }
 
     ToolBar {
@@ -101,11 +165,13 @@ Rectangle {
         anchors.bottom: parent.bottom
         anchors.right: parent.right
         button1Label: (twitter.authorized) ? "Logout" : "Login"
-        button2Label: "New Tweet"
+        button2Label: "Tweet about BB-Py!"
         onButton1Clicked:
         {
             if (twitter.authorized) {
                 twitter.logout()
+                userTimelineModel.clear()
+                friendsTimelineModel.clear()
             }
             else {
                 twitter.getAuthorization()
@@ -114,7 +180,7 @@ Rectangle {
         onButton2Clicked:
         {
             if (twitter.authorized) {
-                twitter.getUserTimeline();
+                twitter.postTweet("I'm sending this tweet from a @BBPyProject sample app! This is so cool, check them out!");
             }
         }
     }
