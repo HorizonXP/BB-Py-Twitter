@@ -3766,7 +3766,7 @@ class Api(object):
                                                   http_method=http_method,
                                                   http_url=url, parameters=parameters)
 
-      req.sign_request(self._signature_method_hmac_sha1, self._oauth_consumer, self._oauth_token, include_body_hash=False)
+      req.sign_request(self._signature_method_hmac_sha1, self._oauth_consumer, self._oauth_token)
 
       headers = req.to_header()
 
