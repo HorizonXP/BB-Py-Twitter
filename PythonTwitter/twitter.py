@@ -3664,7 +3664,10 @@ class Api(object):
     defensive check because during some Twitter network outages
     it will return an HTML failwhale page."""
     try:
-      data = simplejson.loads(json)
+      if hasattr(json, 'decode'):
+        data = simplejson.loads(json.decode())
+      else:
+        data = simplejson.loads(json)
       self._CheckForTwitterError(data)
     except ValueError:
       if "<title>Twitter / Over capacity</title>" in json:
@@ -3750,6 +3753,9 @@ class Api(object):
     # Set up compression
     if use_gzip and not post_data:
       opener.addheaders.append(('Accept-Encoding', 'gzip'))
+    
+    # Add the default headers that were specified
+    opener.addheaders.append(self._request_headers)
 
     if self._oauth_consumer is not None:
       if post_data and http_method == "POST":
@@ -3760,7 +3766,7 @@ class Api(object):
                                                   http_method=http_method,
                                                   http_url=url, parameters=parameters)
 
-      req.sign_request(self._signature_method_hmac_sha1, self._oauth_consumer, self._oauth_token)
+      req.sign_request(self._signature_method_hmac_sha1, self._oauth_consumer, self._oauth_token, include_body_hash=False)
 
       headers = req.to_header()
 
@@ -3801,7 +3807,7 @@ class Api(object):
         url_data = self._cache.Get(key)
 
     # Always return the latest version
-    return str(url_data)
+    return url_data
 
 class _FileCacheError(Exception):
   '''Base exception class for FileCache related errors'''
