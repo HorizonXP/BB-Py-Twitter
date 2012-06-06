@@ -11,7 +11,7 @@ Rectangle {
     }
 
     function addFriendsElement(s) {
-        friendsTimelineModel.append({'tweet': s.text, 'relativeCreatedAt': s.relativeCreatedAt, 'img': s.user.profileImage, 'screenName': s.user.screenName})
+        friendsTimelineModel.append({'tweet': s.text, 'relativeCreatedAt': s.relativeCreatedAt, 'img': s.user.profileImage, 'screen_name': s.user.screenName})
     }
 
     Image {
@@ -40,7 +40,7 @@ Rectangle {
                 source: img
             }
             Text {
-                text: screenName
+                text: screen_name
                 color: 'white'
             }
             Text {
