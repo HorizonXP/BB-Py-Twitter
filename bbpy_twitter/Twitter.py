@@ -12,46 +12,21 @@ class Twitter(OAuthProvider):
         self._setAuthorizeURL('https://api.twitter.com/oauth/authorize')
         self._setAccessTokenURL('https://api.twitter.com/oauth/access_token')
         self._setServiceName('twitter')
+        self.User = None
         self.authorizationChanged.connect(self.getUserProfileData)
+        self._twitterApi = twitterApi.Api(request_headers={'Authorization': 'OAuth'}, debugHTTP=True)
 
     @Slot()
     def getUserProfileData(self):
         if self.authorized:
-            reqURL = 'https://api.twitter.com/1/account/verify_credentials.json'
-            resp, content = self.client.request(reqURL, 
-                    headers={'Authorization': 'OAuth'}, include_body_hash=False)
-            if resp['status'] != '200':
-                raise Exception("Invalid response %s." % resp['status'])
-            retVal = json.loads(content.decode())
-            self._screenName = retVal['screen_name']
-            self._realName = retVal['name']
-            self._timeZone = retVal['time_zone']
-            self._description = retVal['description']
-            self._id = retVal['id_str']
-            self._location = retVal['location']
+            self._twitterApi.SetCredentials(consumer_key=self.consumerKey, consumer_secret=self.consumerSecret, access_token_key=self._oauthToken, access_token_secret=self._oauthTokenSecret)
             try:
-                params = urlparse.urlencode({'screen_name': self._screenName, 
-                            'size': 'original'})
-                reqURL = '/1/users/profile_image?%s' % params
-                conn = http.client.HTTPSConnection('api.twitter.com')
-                conn.request('GET', reqURL)
-                r1 = conn.getresponse()
-                if (r1.status == 302):
-                    self._profileImage = r1.getheader('Location')
-                else:
-                    raise
-            except Exception as e:
-                print(e)
-                self._profileImage = retVal['profile_image_url']
-                
+                self.User = self._twitterApi.VerifyCredentials()
+            except ValueError as e:
+                self.User = self._twitterApi.VerifyCredentials() 
         else:
-            self._screenName = None
-            self._realName = None
-            self._timeZone = None
-            self._description = None
-            self._id = None
-            self._location = None
-            self._profileImage = None
+            self.User = None
+            self._twitterApi.ClearCredentials()
 
         self.screenNameChanged.emit()
         self.realNameChanged.emit()
@@ -63,7 +38,6 @@ class Twitter(OAuthProvider):
 
     @Slot()
     def getUserTimeline(self):
-        api = twitterApi.Api(debugHTTP=True)
         while True:
             try:
                 statuses = api.GetPublicTimeline()
@@ -75,49 +49,70 @@ class Twitter(OAuthProvider):
     @Signal
     def screenNameChanged(self): pass
     def _getScreenName(self):
-        return self._screenName
+        if self.authorized:
+            return self.User.screen_name
+        else:
+            return None
     _screenName = None
     screenName = Property(str, _getScreenName, notify=screenNameChanged)
 
     @Signal
     def realNameChanged(self): pass
     def _getRealName(self):
-        return self._realName
+        if self.authorized:
+            return self.User.name
+        else:
+            return None
     _realName = None
     realName = Property(str, _getRealName, notify=realNameChanged)
 
     @Signal
     def timeZoneChanged(self): pass
     def _getTimeZone(self):
-        return self._timeZone
+        if self.authorized:
+            return self.User.time_zone
+        else:
+            return None
     _timeZone = None
     timeZone = Property(str, _getTimeZone, notify=timeZoneChanged)
 
     @Signal
     def descriptionChanged(self): pass
     def _getDescription(self):
-        return self._description
+        if self.authorized:
+            return self.User.description
+        else:
+            return None
     _description = None
     description = Property(str, _getDescription, notify=descriptionChanged)
 
     @Signal
     def idChanged(self): pass
     def _getID(self):
-        return self._id
+        if self.authorized:
+            return self.User.id
+        else:
+            return None
     _id = None
     id = Property(str, _getID, notify=idChanged)
 
     @Signal
     def locationChanged(self): pass
     def _getLocation(self):
-        return self._location
+        if self.authorized:
+            return self.User.location
+        else:
+            return None
     _location = None
     location = Property(str, _getLocation, notify=locationChanged)
 
     @Signal
     def profileImageChanged(self): pass
     def _getProfileImage(self):
-        return self._profileImage
+        if self.authorized:
+            return self.User.profile_image_url
+        else:
+            return None
     _profileImage = None
     profileImage = Property(str, _getProfileImage, notify=profileImageChanged)
 
