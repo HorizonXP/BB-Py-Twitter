@@ -16,7 +16,9 @@ the foundation is in place to create a fairly complete twitter app.
 There are two branches in this sample, the master and desktop branches. 
 
 To run on the Desktop, simply checkout the desktop branch and run:
+
     python main.py
+
 And the sample app will run on your desktop, provided you have Python 3, Qt,
 and PySide installed.
 
@@ -27,6 +29,7 @@ the location where your NDK is installed. Next, edit `deploy.sh` so that your
 device's IP address and password are specified. Make sure the `source` command
 in this file points to the right place too. Then simply run the following
 commands: 
+
     ./build.sh
     ./deploy.sh
 
